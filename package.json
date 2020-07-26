@@ -1,0 +1,38 @@
+{
+  "name": "@gavel/loopback-connector-google-cloud-datastore",
+  "version": "1.0.0",
+  "description": "Google Cloud Datastore connector for the LoopBack 4 framework.",
+  "main": "dist/index.js",
+  "scripts": {
+    "build:package": "rm -rf dist tsconfig.tsbuildinfo && npx tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:gavelapis/loopback-connector-google-cloud-datastore.git"
+  },
+  "keywords": [
+    "connector",
+    "datasource",
+    "clementohNZ",
+    "loopback",
+    "strongloop",
+    "google",
+    "cloud",
+    "datastore"
+  ],
+  "author": "Clement Oh <clement.oh094@gmail.com>",
+  "license": "MIT",
+  "homepage": "https://github.com/gavelapis/loopback-connector-google-cloud-datastore#readme",
+  "bugs": "https://github.com/gavelapis/loopback-connector-google-cloud-datastoreissues",
+  "dependencies": {
+    "@google-cloud/datastore": "^5.1.0",
+    "@loopback/repository": "^2.10.0",
+    "loopback-connector": "^4.11.0"
+  },
+  "devDependencies": {
+    "husky": "^4.2.5",
+    "loopback-datasource-juggler": "^4.21.2",
+    "prettier": "^2.0.5",
+    "typescript": "^3.9.7"
+  }
+}
