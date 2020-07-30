@@ -133,15 +133,11 @@ class GoogleCloudDatastore extends Connector {
     options: CallOptions,
     callback: CallbackFunction,
   ): Promise<void> {
-    try {
-      const key = this.createEntityKey(model)
-      const entity = GoogleCloudDatastore.createEntity(data, key)
-      const result = await this.datastore.save(entity, options)
-      const id = GoogleCloudDatastore.extractIdFromFirstCommitResponse(result)
-      callback(null, id)
-    } catch (error) {
-      callback(error)
-    }
+    const key = this.createEntityKey(model)
+    const entity = GoogleCloudDatastore.createEntity(data, key)
+    const result = await this.datastore.save(entity, options)
+    const id = GoogleCloudDatastore.extractIdFromFirstCommitResponse(result)
+    callback(null, id)
   }
 
   /**
@@ -186,21 +182,17 @@ class GoogleCloudDatastore extends Connector {
    * @param {String} id - The Entity id
    */
   async findById(model: string, id: string): Promise<Array<GCPDataStoreEntity>> {
-    try {
-      const key = this.createEntityKeyWithId(model, id)
+    const key = this.createEntityKeyWithId(model, id)
 
-      const entities = await this.datastore.get(key)
-      const foundEntity = entities[0]
+    const entities = await this.datastore.get(key)
+    const foundEntity = entities[0]
 
-      if (foundEntity) {
-        const result = this.addIdentifierToEachEntity(entities)
-        return Promise.resolve(result)
-      }
-
-      return Promise.resolve([])
-    } catch (error) {
-      throw error
+    if (foundEntity) {
+      const result = this.addIdentifierToEachEntity(entities)
+      return Promise.resolve(result)
     }
+
+    return Promise.resolve([])
   }
 
   /**
@@ -459,21 +451,17 @@ class GoogleCloudDatastore extends Connector {
     options: CreateReadStreamOptions,
     callback,
   ): Promise<void> {
-    try {
-      // if there is a specified filter, or when using LoopBack's exist method.
-      if (where && where.id) {
-        const key = this.createEntityKeyWithId(model, where.id)
-        const result = await this.datastore.get(key, options)
-        callback(null, result.filter((entity) => entity != null).length)
-        return
-      }
-
-      // get all entities and then retrieve basic array length
-      const result = await this.getAllEntity(model)
-      callback(null, result.length)
-    } catch (error) {
-      callback(error)
+    // if there is a specified filter, or when using LoopBack's exist method.
+    if (where && where.id) {
+      const key = this.createEntityKeyWithId(model, where.id)
+      const result = await this.datastore.get(key, options)
+      callback(null, result.filter((entity) => entity != null).length)
+      return
     }
+
+    // get all entities and then retrieve basic array length
+    const result = await this.getAllEntity(model)
+    callback(null, result.length)
   }
 
   private async updateEntity(model: string, id: string, data: object): Promise<Count> {
