@@ -10,7 +10,8 @@
     "test:docker": "docker-compose up --build",
     "test:docker-compose": "NODE_ENV=test npx jest",
     "build:image": "docker image build -t test-loopback-connector-google-cloud-datastore -f Dockerfile.test .",
-    "format": "npx prettier --write ."
+    "format": "npx prettier --write .",
+    "build": "npx tsc"
   },
   "repository": {
     "type": "git",
