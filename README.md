@@ -40,9 +40,9 @@ are similar. If you want to know how to get started with Loopback [check this](h
 **Install the package:**
 
 ```bash
-npm install --save @gavel/loopback-connector-google-cloud-datastore
+npm install --save @gavelapis/loopback-connector-google-cloud-datastore
 # or
-yarn install @gavel/loopback-connector-google-cloud-datastore
+yarn install @gavelapis/loopback-connector-google-cloud-datastore
 ```
 
 To add a new data source, use the data source generator:
@@ -56,7 +56,7 @@ Then the data source generator will prompt some questions like
 ```bash
 - Enter the data-source name: GoogleCloudDatastore _(Choose your prefered name)_
 - Select the connector for GoogleCloudDatastore: other
-- Enter the connector's module name @gavel/loopback-connector-google-cloud-datastore
+- Enter the connector's module name @gavelapis/loopback-connector-google-cloud-datastore
 - Install loopback-connector-google-cloud-datastore (Y/n) y
 ```
 
@@ -92,7 +92,7 @@ import { juggler } from '@loopback/repository'
 
 const config = {
   name: 'GoogleCloudDatastore',
-  connector: '@gavel/loopback-connector-google-cloud-datastore',
+  connector: '@gavelapis/loopback-connector-google-cloud-datastore',
   projectId: '<GCP_PROJECT_ID>',
   keyFilename: '<ABSOLUTE_PATH_TO_JSON_KEY>',
 }
