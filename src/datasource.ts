@@ -18,6 +18,10 @@ type LoopBackCountResult = Count
 type GCPDataStoreEntity = DataStoreEntity
 type EntityKey = entity.Key
 type Filter = { [key: string]: any }
+type OrderQuery = {
+  ascending?: boolean
+  descending?: boolean
+}
 
 function initializeDataSource(dataSource, callback) {
   dataSource.connector = new GoogleCloudDatastore(dataSource.settings)
@@ -41,22 +45,23 @@ class GoogleCloudDatastore extends Connector {
   /**
    * Create {@link EntityKey} for a specific LoopBack model.
    *
-   * A {@link EntityKey} can be thought of as a Collection in MongoDB or a Table in SQL. It is used
-   * to organize a group of {@link GCPDataStoreEntity}.
+   * A {@link EntityKey} is a tuple structure made of [KindName, id]. A Kind can be thought of as
+   * a Collection in MongoDB or a Table in SQL. It is used to organize a group
+   * of {@link GCPDataStoreEntity}.
    *
    * If the LoopBack Model name changes, the entity persisted will be associated with a new key
-   * using the new name. So you want to refactor your code carefully else Entities may end up
-   * in a different collection; resulting in unexpected query operations.
+   * using the new model name as the Kind. So you want to refactor your code carefully else
+   * Entities may end up in a different collection; resulting in unexpected query operations.
    *
    * For more information on LoopBack model definitions, visit:
    * https://loopback.io/doc/en/lb4/Model.html
    *
-   * @param {String} model - name of the model defined in LoopBack's model annotation.
+   * @param {String} kindName - name of the model defined in LoopBack's model annotation.
    *  For Example: @model({ name: Task.name })
    * @returns {EntityKey}
    */
-  private createEntityKey(model: string): EntityKey {
-    return this.datastore.key(model)
+  private createEntityKey(kindName: string): EntityKey {
+    return this.datastore.key(kindName)
   }
 
   /**
@@ -71,17 +76,18 @@ class GoogleCloudDatastore extends Connector {
    * right operations in methods. In the {@link this.datastore.save} method for example, it will
    * use the 'update' method instead of creating a new object using the 'insert' method.
    *
-   * @param {String} model - name of the model defined in LoopBack's model annotation.
-   *  For Example: @model({ name: Task.name })
+   * @param {String} kindName - name of the model defined in LoopBack's model annotation.
+   *  For Example: @model({ name: Task.name }). This will be used as the Kind name for GCP
+   *  Datastore.
    * @param {String} id - id for existing {@link GCPDataStoreEntity}.
    * @returns {EntityKey}
    */
-  private createEntityKeyWithId(model: string, id: string): EntityKey {
-    return this.datastore.key([model, Number.parseInt(id)])
+  private createEntityKeyWithId(kindName: string, id: string): EntityKey {
+    return this.datastore.key([kindName, Number.parseInt(id)])
   }
 
   /**
-   * Creates valid Entity that is ready to be saved to a specified Key.
+   * Creates valid {@link GCPDataStoreEntity} that is ready to be saved to a specified Kind.
    *
    * @param {object} entityProperties - an object literal containing properties and values
    *  for a given instance of an {@link LoopBackEntity}. These properties and their values will be
@@ -107,7 +113,10 @@ class GoogleCloudDatastore extends Connector {
    *
    * When successful, it will execute the callback with the value of the new
    * {@link GCPDataStoreEntity}'s id. LoopBack will substitute the id property on the
-   * {@link LoopBackEntity}'s model definition with the result of the callback.
+   * {@link LoopBackEntity}'s model definition with the result of the callback. Loopback does not
+   * take any further information from the Datastore response, instead it assumes the persistence
+   * later won't modify the original values used to form the persistence request and just appends
+   * the id to the previously undefined id property.
    *
    * @param {String} model - name of the model defined in LoopBack's model annotation.
    *  For Example: @model({ name: Task.name })
@@ -189,7 +198,7 @@ class GoogleCloudDatastore extends Connector {
   }
 
   /**
-   * Get all records of an Entity
+   * Get all entities for a given Kind.
    *
    * @param {String} model - name of the model defined in LoopBack's model annotation.
    *  For Example: @model({ name: Task.name })
@@ -206,7 +215,7 @@ class GoogleCloudDatastore extends Connector {
   }
 
   /**
-   * Returns true if it's not an array.
+   * Helper method that returns true if it's not an array.
    *
    * @param valueToCheck - item to check.
    * @returns {boolean} - returns true if not an array and false if it's an array.
@@ -216,7 +225,9 @@ class GoogleCloudDatastore extends Connector {
   }
 
   /**
-   * Internal method for building query.
+   * Build a valid GQL query for the Google Datastore Node.js api.
+   *
+   * https://googleapis.dev/nodejs/datastore/latest/index.html
    *
    * @param {String} model - name of the model defined in LoopBack's model annotation.
    *  For Example: @model({ name: Task.name })
@@ -272,13 +283,13 @@ class GoogleCloudDatastore extends Connector {
   }
 
   /**
-   * Internal method - Get Entities with query execution.
+   * Get {@link GCPDataStoreEntity} with query execution.
    *
    * @param {String} model - name of the model defined in LoopBack's model annotation.
    *  For Example: @model({ name: Task.name })
    * @param {Object} filter - the filter for querying {@link GCPDataStoreEntity}.
    */
-  private async getResultsWithQuery(model, filter) {
+  private async getResultsWithQuery(model, filter): Promise<Array<GCPDataStoreEntity>> {
     const query = this.buildQuery(model, filter)
     const entities = await query.run()
     return this.addIdentifierToEachEntity(entities[0])
@@ -295,7 +306,7 @@ class GoogleCloudDatastore extends Connector {
   }
 
   /**
-   * Find matching model {@link GCPDataStoreEntity} using a filter.
+   * Find matching {@link GCPDataStoreEntity} using a filter.
    *
    * @param {String} model - name of the model defined in LoopBack's model annotation.
    *  For Example: @model({ name: Task.name })
@@ -303,7 +314,7 @@ class GoogleCloudDatastore extends Connector {
    * @param {Object} _options - the options object
    * @param {Function} [callback] - the callback function
    */
-  async all(model: string, filter: Filter, _options: CallOptions, callback) {
+  async all(model: string, filter: Filter, _options: CallOptions, callback): Promise<void> {
     const { where } = filter
 
     let result
@@ -320,11 +331,11 @@ class GoogleCloudDatastore extends Connector {
   }
 
   /**
-   * Internal Method - Generate ordering object to use in the datastore query
+   * Generate ordering object to use in the datastore query.
    *
    * @param {String} orderOption <ASC|DESC> Order option
    */
-  private static generateOrderingObject(orderOption) {
+  private static generateOrderingObject(orderOption): OrderQuery {
     if (orderOption.toUpperCase() === 'DESC') return { descending: true }
     return { ascending: true }
   }
@@ -411,8 +422,8 @@ class GoogleCloudDatastore extends Connector {
    * tracking the count of records in another collection.
    *
    * Note: LoopBack repository's "exist" method also uses this "count" method to determine whether
-   * or not a {@link GCPDataStoreEntity} exists. It will make a call like:
-   * this.userRepository.exists('394628734637'). Then the id will be transformed into a where filter
+   * or not a {@link GCPDataStoreEntity} exists. If you make a call like:
+   * this.userRepository.exists('394628734637'), the the id will be transformed into a where filter
    * and passed to this method. That's why we check for (where && where.id).
    *
    * When using LoopBack repository's "exist" method, the length passed to the callback will
@@ -464,7 +475,7 @@ class GoogleCloudDatastore extends Connector {
   }
 
   /**
-   * Update matching Entity
+   * Update matching {@link GCPDataStoreEntity} with new values.
    *
    * @param {String} model - name of the model defined in LoopBack's model annotation.
    *  For Example: @model({ name: Task.name })
@@ -502,7 +513,10 @@ class GoogleCloudDatastore extends Connector {
   }
 
   /**
-   * Destroy all Entities of a model
+   * Destroy all {@link GCPDataStoreEntity} for a given Kind.
+   *
+   * This method is also used by LoopBack repository's deleteById method, hence the check for
+   * "where" and "where.id".
    *
    * @param {String} model - name of the model defined in LoopBack's model annotation.
    *  For Example: @model({ name: Task.name })
