@@ -482,7 +482,8 @@ class GoogleCloudDatastore extends Connector {
       key,
       data,
     })) as UpdateResponse
-    return { count: updateResponse[0].indexUpdates }
+    const updatedRows = updateResponse[0].mutationResults.length
+    return { count: updatedRows }
   }
 
   /**
