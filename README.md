@@ -42,7 +42,7 @@ are similar. If you want to know how to get started with Loopback [check this](h
 ```bash
 npm install --save @gavelapis/loopback-connector-google-cloud-datastore
 # or
-yarn install @gavelapis/loopback-connector-google-cloud-datastore
+yarn add @gavelapis/loopback-connector-google-cloud-datastore
 ```
 
 To add a new data source, use the data source generator:
