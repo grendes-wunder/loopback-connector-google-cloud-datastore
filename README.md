@@ -235,6 +235,17 @@ Thanks to the [awesome action](https://github.com/marketplace/actions/publish-to
 commit with the message `Release 1.2.3`, the `npm-publish` action will create a new tag `v1.2.3` and publish the
 package to the npm registry.
 
+## Testing Locally
+Here are some helpful tools to work with Google Cloud Datastore locally.
+
+* [Gavel APIs | Docker Datastore Emulator](https://github.com/gavelapis/datastore-emulator-docker). This is an updated
+fork of the original repository because that was no longer maintained, and the version had gone stale by over 100
+versions.
+* [Gavel APIs | Google Cloud Datastore GUI](https://github.com/gavelapis/google-cloud-gui). This is a fork of the
+original with no modifications (yet). There are some annoyances such as not being able to easily select multiple
+entities to delete at once, which I will be looking to address down the line.
+
+
 ### License
 
 Copyrighted (c) 2020 [Clement Oh][3] Licensed under the [MIT license][2].
