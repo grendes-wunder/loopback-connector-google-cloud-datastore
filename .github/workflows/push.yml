@@ -24,6 +24,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Install dependencies
-        run: npx install
+        run: npm install
       - name: Run integraton tests
-        run: npx test
+        run: npm test

@@ -21,7 +21,7 @@ jobs:
       - name: Install dependencies
         run: npm install
       - name: Run integraton tests
-        run: npx test
+        run: npm test
   npm-publish:
     name: npm-publish
     runs-on: ubuntu-latest
