@@ -9,7 +9,8 @@ jobs:
     services:
       datastore:
         image: gavelapis/datastore-emulator-docker:302.0.0
-        ports: 8081:8081
+        ports:
+          - 8081:8081
     runs-on: ubuntu-latest
     env:
       DATASTORE_PROJECT_ID: project-test
