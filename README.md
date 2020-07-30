@@ -200,7 +200,7 @@ export class UserService {
     })
     // const filter = {
     //   where: {
-    //     and: [{ email: 'example@example.com' }, { password: '1235' }],
+    //     and: [{ email: 'example@example.com' }, { postcode: '12345' }],
     //   },
     // }
     this.userRepository
