@@ -63,7 +63,6 @@ describe('Test Google Cloud Datastore Connector', () => {
             },
             (error, customer) => {
               customer2 = customer
-              console.log(`Should create another Customer entity - id: ${customer.id}`)
               expect(customer.name).toEqual(customerName)
               expect(customer.emails.length).toEqual(1)
               // delay starting first test to allow eventual consistency mechanism to
@@ -79,28 +78,28 @@ describe('Test Google Cloud Datastore Connector', () => {
   })
 
   it('Should count 2 entities', (done: DoneCallback) => {
-    Customer.find({}, (error, customer) => {
-      expect(Array.isArray(customer)).toBeTruthy()
-      expect(customer.length).toEqual(2)
+    Customer.find({}, (error, customers) => {
+      expect(Array.isArray(customers)).toBeTruthy()
+      expect(customers.length).toEqual(2)
       error ? done(error) : done()
     })
   })
 
   it('Should find an Entity by id', (done: DoneCallback) => {
-    Customer.find({ where: { id: customer1.id } }, (error, queryResults) => {
-      expect(Array.isArray(queryResults)).toBeTruthy()
-      expect(queryResults.length).toEqual(1)
-      const savedCustomer = queryResults[0]
+    Customer.find({ where: { id: customer1.id } }, (error, customers) => {
+      expect(Array.isArray(customers)).toBeTruthy()
+      expect(customers.length).toEqual(1)
+      const savedCustomer = customers[0]
       expect(savedCustomer.id).toEqual(customer1.id)
       error ? done(error) : done()
     })
   })
 
   it('Should get object properties', (done: DoneCallback) => {
-    Customer.find({ where: { id: customer1.id } }, (error, queryResults) => {
-      expect(Array.isArray(queryResults)).toBeTruthy()
-      expect(queryResults.length).toEqual(1)
-      const savedCustomer = queryResults[0]
+    Customer.find({ where: { id: customer1.id } }, (error, customers) => {
+      expect(Array.isArray(customers)).toBeTruthy()
+      expect(customers.length).toEqual(1)
+      const savedCustomer = customers[0]
       expect(savedCustomer.name).toEqual(customer1.name)
       expect(savedCustomer.age).toEqual(customer1.age)
       error ? done(error) : done()
@@ -108,11 +107,11 @@ describe('Test Google Cloud Datastore Connector', () => {
   })
 
   it('Should get all entities', (done: DoneCallback) => {
-    Customer.all((error, queryResults) => {
-      expect(Array.isArray(queryResults)).toBeTruthy()
-      expect(queryResults.length).toEqual(2)
-      const savedCustomer1 = queryResults[0]
-      const savedCustomer2 = queryResults[1]
+    Customer.all((error, customers) => {
+      expect(Array.isArray(customers)).toBeTruthy()
+      expect(customers.length).toEqual(2)
+      const savedCustomer1 = customers[0]
+      const savedCustomer2 = customers[1]
       expect(savedCustomer1.id).toEqual(customer1.id)
       expect(savedCustomer2.id).toEqual(customer2.id)
       error ? done(error) : done()
