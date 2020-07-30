@@ -18,7 +18,8 @@ function getDatasource() {
 }
 
 const datasource = getDatasource()
-const Customer = datasource.createModel('customer', {
+
+const Customer: any = datasource.createModel('customer', {
   name: String,
   emails: [String],
   type: String,
@@ -37,11 +38,9 @@ describe('Test Google Cloud Datastore Connector', () => {
    * if you're querying for the data immediately after it has been persisted.
    */
   beforeAll((done: DoneCallback) => {
-    // @ts-ignore
     Customer.destroyAll((error) => {
       error ? console.error(error) : ''
 
-      // @ts-ignore
       Customer.create(
         {
           name: customerName,
@@ -55,7 +54,6 @@ describe('Test Google Cloud Datastore Connector', () => {
           expect(customer.emails.length).toEqual(2)
           error ? console.error(error) : ''
 
-          // @ts-ignore
           Customer.create(
             {
               name: customerName,
@@ -81,7 +79,6 @@ describe('Test Google Cloud Datastore Connector', () => {
   })
 
   it('Should count 2 entities', (done: DoneCallback) => {
-    // @ts-ignore
     Customer.find({}, (error, customer) => {
       expect(Array.isArray(customer)).toBeTruthy()
       expect(customer.length).toEqual(2)
@@ -90,74 +87,60 @@ describe('Test Google Cloud Datastore Connector', () => {
   })
 
   it('Should find an Entity by id', (done: DoneCallback) => {
-    // @ts-ignore
     Customer.find({ where: { id: customer1.id } }, (error, queryResults) => {
       expect(Array.isArray(queryResults)).toBeTruthy()
       expect(queryResults.length).toEqual(1)
       const savedCustomer = queryResults[0]
-      // @ts-ignore
       expect(savedCustomer.id).toEqual(customer1.id)
       error ? done(error) : done()
     })
   })
 
   it('Should get object properties', (done: DoneCallback) => {
-    // @ts-ignore
     Customer.find({ where: { id: customer1.id } }, (error, queryResults) => {
       expect(Array.isArray(queryResults)).toBeTruthy()
       expect(queryResults.length).toEqual(1)
       const savedCustomer = queryResults[0]
-      // @ts-ignore
       expect(savedCustomer.name).toEqual(customer1.name)
-      // @ts-ignore
       expect(savedCustomer.age).toEqual(customer1.age)
       error ? done(error) : done()
     })
   })
 
   it('Should get all entities', (done: DoneCallback) => {
-    // @ts-ignore
     Customer.all((error, queryResults) => {
       expect(Array.isArray(queryResults)).toBeTruthy()
       expect(queryResults.length).toEqual(2)
       const savedCustomer1 = queryResults[0]
       const savedCustomer2 = queryResults[1]
-      // @ts-ignore
       expect(savedCustomer1.id).toEqual(customer1.id)
-      // @ts-ignore
       expect(savedCustomer2.id).toEqual(customer2.id)
       error ? done(error) : done()
     })
   })
 
   it('Should get one entity from all using limit filter', (done: DoneCallback) => {
-    // @ts-ignore
     Customer.all({ limit: 1 }, (error, customers) => {
       expect(Array.isArray(customers))
-      // @ts-ignore
       expect(customers[0].id).toEqual(customer1.id)
       error ? done(error) : done()
     })
   })
 
   it('Should get Orion as first Entity in the array', (done: DoneCallback) => {
-    // @ts-ignore
     Customer.all({ order: 'age DESC' }, (error, customers) => {
       expect(Array.isArray(customers))
       expect(customers.length).toEqual(2)
-      // @ts-ignore
       expect(customers[0].id).toEqual(customer2.id)
       error ? done(error) : done()
     })
   })
 
   it('Should get a specific field from all entities', (done: DoneCallback) => {
-    // @ts-ignore
     Customer.all({ fields: { emails: true } }, (error, customers) => {
       expect(Array.isArray(customers))
       expect(customers.length).toEqual(2)
       const savedCustomer1 = customers[0]
-      // @ts-ignore
       expect(savedCustomer1.emails).toEqual(customer1.emails)
       expect(savedCustomer1.age).toEqual(undefined)
       error ? done(error) : done()
@@ -165,28 +148,22 @@ describe('Test Google Cloud Datastore Connector', () => {
   })
 
   it('Should find entities by age less than 28', (done: DoneCallback) => {
-    // @ts-ignore
     Customer.find({ where: { age: { lt: 28 } } }, (error, customers) => {
       expect(Array.isArray(customers))
       expect(customers.length).toEqual(2)
       const savedCustomer1 = customers[0]
-      // @ts-ignore
       expect(savedCustomer1.age).toEqual(customer1.age)
-      // @ts-ignore
       expect(savedCustomer1.id).toEqual(customer1.id)
       error ? done(error) : done()
     })
   })
 
   it('Should find an entity by age equals to 2', (done: DoneCallback) => {
-    // @ts-ignore
     Customer.find({ where: { age: customer1.age } }, (error, customers) => {
       expect(Array.isArray(customers))
       expect(customers.length).toEqual(1)
       const savedCustomer1 = customers[0]
-      // @ts-ignore
       expect(savedCustomer1.age).toEqual(customer1.age)
-      // @ts-ignore
       expect(savedCustomer1.id).toEqual(customer1.id)
       error ? done(error) : done()
     })
@@ -194,7 +171,6 @@ describe('Test Google Cloud Datastore Connector', () => {
 
   it('Should replace values for models with same property value', (done: DoneCallback) => {
     const newEmails = ['animal@example.com']
-    // @ts-ignore
     Customer.update({ where: { type: 'Animal' } }, { emails: newEmails }, (error, updateResult) => {
       expect(updateResult.count).toEqual(2)
       error ? done(error) : done()
@@ -202,7 +178,6 @@ describe('Test Google Cloud Datastore Connector', () => {
   })
 
   it('Should delete an entity', (done: DoneCallback) => {
-    // @ts-ignore
     Customer.destroyAll({ id: customer1.id }, (error, deleteResult) => {
       expect(deleteResult.count).toEqual(1)
       error ? done(error) : done()
@@ -210,7 +185,6 @@ describe('Test Google Cloud Datastore Connector', () => {
   })
 
   it('Should delete all entities', (done: DoneCallback) => {
-    // @ts-ignore
     Customer.destroyAll(null, (error, deleteResult) => {
       expect(deleteResult.count).toEqual(1)
       error ? done(error) : done()

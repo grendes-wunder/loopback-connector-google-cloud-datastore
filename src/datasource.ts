@@ -13,9 +13,7 @@ import * as Long from 'long'
 import { Connector } from 'loopback-connector'
 import * as path from 'path'
 
-// @ts-ignore
 type LoopBackEntity = Entity
-// @ts-ignore
 type LoopBackCountResult = Count
 type GCPDataStoreEntity = DataStoreEntity
 type EntityKey = entity.Key
@@ -315,11 +313,8 @@ class GoogleCloudDatastore extends Connector {
     } else if (GoogleCloudDatastore.hasFilter(filter)) {
       result = await this.getResultsWithQuery(model, filter)
     } else {
-      console.log('get all entities')
       result = await this.getAllEntity(model)
     }
-
-    console.log('find results:', result)
 
     callback(null, result)
   }

@@ -4,4 +4,4 @@ COPY . .
 
 RUN yarn install
 
-RUN yarn jest
+CMD yarn test
