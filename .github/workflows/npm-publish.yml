@@ -1,9 +1,15 @@
-name: npm-publish
+name: Publish to NPM
 on:
   push:
     branches:
       - master # Change this to your default branch
 jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build the stack
+        run: docker-compose up --exit-code-from test
   npm-publish:
     name: npm-publish
     runs-on: ubuntu-latest
