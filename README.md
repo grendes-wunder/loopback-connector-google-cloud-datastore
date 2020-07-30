@@ -36,15 +36,22 @@ large scale projects through-and-through. If you're familiar with the Java [Spri
 then you should feel right at home. LoopBack has more constructs to wire up before getting started, but the patterns
 are similar. If you want to know how to get started with Loopback [check this](http://loopback.io/getting-started/).
 
+**Install the package:**
+```bash
+npm install --save @gavel/loopback-connector-google-cloud-datastore
+# or
+yarn install @gavel/loopback-connector-google-cloud-datastore
+```
+
 To add a new data source, use the data source generator:
 
-```sh
+```bash
 lb4 datasource
 ```
 
 Then the data source generator will prompt some questions like
 
-```
+```bash
 - Enter the data-source name: GoogleCloudDatastore _(Choose your prefered name)_
 - Select the connector for GoogleCloudDatastore: other
 - Enter the connector's module name @gavel/loopback-connector-google-cloud-datastore
@@ -121,7 +128,7 @@ If you already have a model, skip to the [repositories](#repositories) section.
 
 To create a model, use the LoopBack cli command:
 
-```
+```bash
 lb4 model
 
 ? Model class name: User
@@ -137,7 +144,7 @@ Enter an empty property name when done
 
 To generate a new repository, just run the cli command:
 
-```
+```bash
 lb4 repository
 ```
 

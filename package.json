@@ -1,16 +1,16 @@
 {
-  "name": "@gavel/loopback-connector-google-cloud-datastore",
+  "name": "@gavelapis/loopback-connector-google-cloud-datastore",
   "version": "1.0.0",
   "description": "Google Cloud Datastore connector for the LoopBack 4 framework.",
   "main": "dist/index.js",
   "scripts": {
-    "test": "yarn jest",
-    "test:local": "DATASTORE_EMULATOR_HOST=localhost:8081 DATASTORE_PROJECT_ID=project-test NODE_ENV=test yarn jest",
+    "test": "npx jest",
+    "test:local": "DATASTORE_EMULATOR_HOST=localhost:8081 DATASTORE_PROJECT_ID=project-test NODE_ENV=test npx jest",
     "test:ci": "docker-compose up",
     "test:docker": "docker-compose up --build",
-    "test:docker-compose": "NODE_ENV=test yarn jest",
+    "test:docker-compose": "NODE_ENV=test npx jest",
     "build:image": "docker image build -t test-loopback-connector-google-cloud-datastore -f Dockerfile.test .",
-    "format": "yarn prettier --write ."
+    "format": "npx prettier --write ."
   },
   "repository": {
     "type": "git",
