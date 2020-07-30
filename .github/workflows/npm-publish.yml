@@ -5,6 +5,7 @@ on:
       - master # Change this to your default branch
 jobs:
   test:
+    name: Integration test for Datastore connector
     container: node:12.18.3-alpine3.9
     services:
       datastore:
@@ -18,8 +19,8 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Install dependencies
-        run: npx install
-      - name: Run tests
+        run: npm install
+      - name: Run integraton tests
         run: npx test
   npm-publish:
     name: npm-publish
