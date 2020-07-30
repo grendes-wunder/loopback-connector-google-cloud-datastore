@@ -9,7 +9,7 @@ Google Cloud Datastore [connector](https://loopback.io/doc/en/lb4/Connectors-ref
 ## Inspiration
 
 [Henrique Carvalho da Cruz (henriquecarv)](https://github.com/henriquecarv) -
-[Original Datastore Conenctor](https://github.com/henriquecarv/loopback-connector-google-cloud-datastore)
+[Original Datastore Connector](https://github.com/henriquecarv/loopback-connector-google-cloud-datastore)
 
 ## Motivation to create new connector
 
@@ -229,7 +229,7 @@ export class UserService {
 }
 ```
 
-## Publishing new Version
+## Publishing new version
 
 Thanks to the [awesome action](https://github.com/marketplace/actions/publish-to-npm) created by
 [pascalgn](https://github.com/pascalgn), when someone changes the version in `package.json` to 1.2.3 and pushes a
