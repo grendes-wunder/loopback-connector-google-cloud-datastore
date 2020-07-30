@@ -1,0 +1,14 @@
+# IDEA
+.idea/loopback-connector-google-cloud-datastore.iml
+.idea/misc.xml
+.idea/modules.xml
+.idea/vcs.xml
+.idea/workspace.xml
+
+.DS_Store
+
+# Node
+node_modules
+
+# Other
+yarn-error.log
