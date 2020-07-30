@@ -10,9 +10,18 @@ on:
       - .github/workflows/push.yml
 jobs:
   test:
+    container: node:12.18.3-alpine3.9
+    services:
+      datastore:
+        image: gavelapis/datastore-emulator-docker:302.0.0
+        ports: 8081:8081
     runs-on: ubuntu-latest
+    env:
+      DATASTORE_PROJECT_ID: project-test
+      DATASTORE_EMULATOR_HOST: datastore:8081
     steps:
       - uses: actions/checkout@v2
-      - name: Build the stack
-        run: docker-compose up --exit-code-from test
-
+      - name: Install dependencies
+        run: npx install
+      - name: Run tests
+        run: npx test

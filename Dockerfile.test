@@ -2,6 +2,6 @@ FROM node:12.18.2-alpine3.9
 
 COPY . .
 
-RUN yarn install
+RUN npm install
 
-CMD yarn test
+CMD npm test
