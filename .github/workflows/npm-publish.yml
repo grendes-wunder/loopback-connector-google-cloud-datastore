@@ -3,6 +3,9 @@ on:
   push:
     branches:
       - master # Change this to your default branch
+    paths:
+      - src/*
+      - package.json
 jobs:
   test:
     name: Integration test for Datastore connector

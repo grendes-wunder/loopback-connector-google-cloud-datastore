@@ -8,6 +8,7 @@ on:
     paths:
       - src/*
       - .github/workflows/push.yml
+      - package.json
 jobs:
   test:
     name: Integration test for Datastore connector
