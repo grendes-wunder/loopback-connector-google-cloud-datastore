@@ -11,6 +11,7 @@
     "target": "es2018",
     "declaration": true,
     "importHelpers": true,
-    "module": "commonjs"
+    "module": "commonjs",
+    "esModuleInterop": true
   }
 }

@@ -12,19 +12,22 @@ Google Cloud Datastore [connector](https://loopback.io/doc/en/lb4/Connectors-ref
 [Original Datastore Conenctor](https://github.com/henriquecarv/loopback-connector-google-cloud-datastore)
 
 ## Motivation to create new connector
+
 The [original connector](https://github.com/henriquecarv/loopback-connector-google-cloud-datastore) was an **awesome**
 starting point, but this is why I decided to create a new connector.
 
-* I'm not sure if it's because of LoopBack 4 doing things differently to LoopBack 2 or 3, which is when
-this plugin was written, but there were errors that weren't being handled properly and made the connector hard to
-use within the confines of LoopBack 4.
-* There were very inefficient calls made, such as fetching the entire list of items before updating them when the
-Datastore node api allows you to pass keys and data to handle the operation in a single network call and operation.
-* The methods didn't have much documentation.
-* The library wasn't typed so it was difficult to not very easy to navigate the source and understand what was going on.
-* After reading the documentation for LoopBack framework repositories and
-[original connector](https://github.com/henriquecarv/loopback-connector-google-cloud-datastore) I still found it very
-difficult to connect because the setup process was not aligned with the framework version.
+- I'm not sure if it's because of LoopBack 4 doing things differently to LoopBack 2 or 3, which is when
+  this plugin was written, but there were errors that weren't being handled properly and made the connector hard to
+  use within the confines of LoopBack 4.
+- There were very inefficient calls made, such as fetching the entire list of items before updating them when the
+  Datastore node api allows you to pass keys and data to handle the operation in a single network call and operation.
+- Add usage of datastore emulator to run integration tests using Docker Compose instead of connecting to a real
+  Datastore setup using a service account. Will reduce costs significantly and increase repeatability.
+- The methods didn't have much documentation to explain what was going on.
+- The library wasn't typed so it was difficult to not very easy to navigate the source and understand what was going on.
+- After reading the documentation for LoopBack framework repositories and
+  [original connector](https://github.com/henriquecarv/loopback-connector-google-cloud-datastore) I still found it very
+  difficult to connect because the setup process was not aligned with the framework version.
 
 ## Installation
 
@@ -53,6 +56,7 @@ If you don't already have a JSON key for your service account, go to
 and generate a new private key and save the JSON file.
 
 It should look something like this:
+
 ```json
 {
   "type": "service_account",
@@ -72,6 +76,7 @@ To test it out on your local machine, copy the **absolute** path to the JSON fil
 configuration.
 
 **src/datasources/google-cloud-datastore.datasource.ts** (or whatever your chosen name was during the generationnprocess)
+
 ```typescript
 import { inject, lifeCycleObserver, LifeCycleObserver } from '@loopback/core'
 import { juggler } from '@loopback/repository'
@@ -111,6 +116,7 @@ Once you have set up the connection to a datasource. You will need a
 (if you don't already have one) to start querying the datasource.
 
 ### Models
+
 If you already have a model, skip to the [repositories](#repositories) section.
 
 To create a model, use the LoopBack cli command:
@@ -128,6 +134,7 @@ Enter an empty property name when done
 ```
 
 ### Repositories
+
 To generate a new repository, just run the cli command:
 
 ```
@@ -168,9 +175,7 @@ import { UserRepository } from '../repositories'
 
 @bind({ scope: BindingScope.TRANSIENT })
 export class UserService {
-  constructor(
-    @repository(UserRepository) private userRepository: UserRepository,
-  ) {}
+  constructor(@repository(UserRepository) private userRepository: UserRepository) {}
 
   /**
    * Create new User.
@@ -211,7 +216,6 @@ export class UserService {
       // .update(newUser)
       .then((result) => console.log('result:', result))
       .catch((error) => console.error('error:', error))
-
   }
 }
 ```

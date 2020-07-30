@@ -1,13 +1,13 @@
 import { Datastore } from '@google-cloud/datastore'
+import { entity, Entity as DataStoreEntity } from '@google-cloud/datastore/build/src/entity'
+import { Query } from '@google-cloud/datastore/build/src/query'
 import {
   CommitResponse,
   CreateReadStreamOptions,
   DeleteResponse,
   UpdateResponse,
 } from '@google-cloud/datastore/build/src/request'
-import { Query } from '@google-cloud/datastore/build/src/query'
-import { entity, Entity as DataStoreEntity } from '@google-cloud/datastore/build/src/entity'
-import { Entity, Count } from '@loopback/repository'
+import { Count, Entity } from '@loopback/repository'
 import { CallOptions } from 'google-gax'
 import * as Long from 'long'
 import { Connector } from 'loopback-connector'
@@ -196,7 +196,7 @@ class GoogleCloudDatastore extends Connector {
    * @param {String} model - name of the model defined in LoopBack's model annotation.
    *  For Example: @model({ name: Task.name })
    */
-  async getAllEntity(model) {
+  private async getAllEntity(model) {
     try {
       const query = this.datastore.createQuery(model)
       const entities = await query.run()
@@ -308,21 +308,20 @@ class GoogleCloudDatastore extends Connector {
   async all(model: string, filter: Filter, _options: CallOptions, callback) {
     const { where } = filter
 
-    try {
-      let result
+    let result
 
-      if (where && where.id) {
-        result = await this.findById(model, where.id)
-      } else if (GoogleCloudDatastore.hasFilter(filter)) {
-        result = await this.getResultsWithQuery(model, filter)
-      } else {
-        result = await this.getAllEntity(model)
-      }
-
-      callback(null, result)
-    } catch (error) {
-      callback(error)
+    if (where && where.id) {
+      result = await this.findById(model, where.id)
+    } else if (GoogleCloudDatastore.hasFilter(filter)) {
+      result = await this.getResultsWithQuery(model, filter)
+    } else {
+      console.log('get all entities')
+      result = await this.getAllEntity(model)
     }
+
+    console.log('find results:', result)
+
+    callback(null, result)
   }
 
   /**
@@ -480,34 +479,31 @@ class GoogleCloudDatastore extends Connector {
    * @param {Function} callback The callback function
    */
   async update(model: string, filter: Filter, data, _options: CallOptions, callback) {
-    try {
-      const { where } = filter
+    const { where } = filter
 
-      // Handle ".updateById" from LoopBack
-      if (filter && filter.id) {
-        callback(null, await this.updateEntity(model, filter.id, data))
-        return
-      }
-      // Handle update if just one entity. ".update" method in LoopBack's crud repository.
-      else if (where && where.id) {
-        callback(null, await this.updateEntity(model, where.id, data))
-        return
-      }
-
-      // Handle multiple entity updates
-      // Get existing entities that will need to be updated based on query
-      const entities = await this.getResultsWithQuery(model, filter)
-      // Assign new data to existing entities
-      const newEntities = entities.map((entity: GCPDataStoreEntity) => {
-        return Object.assign(entity, data)
-      })
-      // Update those entities
-      const updateResponse = (await this.datastore.update(newEntities)) as UpdateResponse
-      const commitResult = updateResponse[0]
-      callback(null, { count: commitResult.indexUpdates })
-    } catch (error) {
-      callback(error)
+    // Handle ".updateById" from LoopBack
+    if (filter && filter.id) {
+      callback(null, await this.updateEntity(model, filter.id, data))
+      return
     }
+    // Handle update if just one entity. ".update" method in LoopBack's crud repository.
+    else if (where && where.id) {
+      callback(null, await this.updateEntity(model, where.id, data))
+      return
+    }
+
+    // Handle multiple entity updates
+    // Get existing entities that will need to be updated based on query
+    const entities = await this.getResultsWithQuery(model, filter)
+    // Assign new data to existing entities
+    const newEntities = entities.map((entity: GCPDataStoreEntity) => {
+      return Object.assign(entity, data)
+    })
+    // Update those entities
+    const updateResponse = (await this.datastore.update(newEntities)) as UpdateResponse
+    const commitResult = updateResponse[0]
+    const updatedRows = commitResult.mutationResults.length
+    callback(null, { count: updatedRows })
   }
 
   /**
@@ -520,28 +516,27 @@ class GoogleCloudDatastore extends Connector {
    * @param {Function} [callback] - the callback function
    */
   async destroyAll(model: string, where: Filter, options: CallOptions, callback) {
-    try {
-      if (where && where.id) {
-        const key = this.createEntityKeyWithId(model, where.id)
-        const result = (await this.datastore.delete(key, options)) as CommitResponse
-        const commitResult = result[0]
-        // LoopBack expects result to be an object with a count property
-        callback(null, { count: commitResult.indexUpdates })
-      } else {
-        const result = await this.getAllEntity(model)
-        const keys = result.map((entity: GCPDataStoreEntity) => {
-          return this.createEntityKeyWithId(model, entity.id)
-        })
-        const deleteResult = (await this.datastore.delete(keys)) as DeleteResponse
-        const commitResult = deleteResult[0]
-        // LoopBack expects result to be an object with a count property
-        callback(null, { count: commitResult.indexUpdates })
-      }
-    } catch (error) {
-      callback(error)
+    if (where && where.id) {
+      const key = this.createEntityKeyWithId(model, where.id)
+      const result = (await this.datastore.delete(key, options)) as CommitResponse
+      const commitResult = result[0]
+      const deletedRows = commitResult.mutationResults.length
+      // LoopBack expects result to be an object with a count property
+      callback(null, { count: deletedRows })
+    } else {
+      const result = await this.getAllEntity(model)
+      const keys = result.map((entity: GCPDataStoreEntity) => {
+        return this.createEntityKeyWithId(model, entity.id)
+      })
+      const deleteResult = (await this.datastore.delete(keys)) as DeleteResponse
+      const commitResult = deleteResult[0]
+      const deletedRows = commitResult.mutationResults.length
+      // LoopBack expects result to be an object with a count property
+      callback(null, { count: deletedRows })
     }
   }
 }
 
+// // Required by LoopBack to be in this commonjs format
 exports.initialize = initializeDataSource
 exports.RealtimeDatabase = GoogleCloudDatastore
