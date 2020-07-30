@@ -179,14 +179,11 @@ describe('Test Google Cloud Datastore Connector', () => {
   it('Should delete an entity', (done: DoneCallback) => {
     Customer.destroyAll({ id: customer1.id }, (error, deleteResult) => {
       expect(deleteResult.count).toEqual(1)
-      error ? done(error) : done()
-    })
-  })
-
-  it('Should delete all entities', (done: DoneCallback) => {
-    Customer.destroyAll(null, (error, deleteResult) => {
-      expect(deleteResult.count).toEqual(1)
-      error ? done(error) : done()
+      if (error) done(error)
+      Customer.destroyAll(null, (error, deleteResult) => {
+        expect(deleteResult.count).toEqual(1)
+        error ? done(error) : done()
+      })
     })
   })
 })
