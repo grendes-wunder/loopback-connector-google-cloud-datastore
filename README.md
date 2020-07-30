@@ -28,6 +28,7 @@ starting point, but this is why I decided to create a new connector.
 - After reading the documentation for LoopBack framework repositories and
   [original connector](https://github.com/henriquecarv/loopback-connector-google-cloud-datastore) I still found it very
   difficult to connect because the setup process was not aligned with the framework version.
+- Add automated integration testing, versioning, and publishing to npm using Github Actions.
 
 ## Installation
 
