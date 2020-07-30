@@ -22,8 +22,9 @@ type OrderQuery = {
   ascending?: boolean
   descending?: boolean
 }
+type CallbackFunction = (error?: Error, result?: any) => {}
 
-function initializeDataSource(dataSource, callback) {
+function initializeDataSource(dataSource, callback: CallbackFunction) {
   dataSource.connector = new GoogleCloudDatastore(dataSource.settings)
   process.nextTick(() => {
     callback()
@@ -126,7 +127,12 @@ class GoogleCloudDatastore extends Connector {
    *  to bubble up the result.
    * @returns Promise<void>
    */
-  async create(model: string, data: object, options: CallOptions, callback): Promise<void> {
+  async create(
+    model: string,
+    data: object,
+    options: CallOptions,
+    callback: CallbackFunction,
+  ): Promise<void> {
     try {
       const key = this.createEntityKey(model)
       const entity = GoogleCloudDatastore.createEntity(data, key)
@@ -314,7 +320,12 @@ class GoogleCloudDatastore extends Connector {
    * @param {Object} _options - the options object
    * @param {Function} [callback] - the callback function
    */
-  async all(model: string, filter: Filter, _options: CallOptions, callback): Promise<void> {
+  async all(
+    model: string,
+    filter: Filter,
+    _options: CallOptions,
+    callback: CallbackFunction,
+  ): Promise<void> {
     const { where } = filter
 
     let result
@@ -484,7 +495,13 @@ class GoogleCloudDatastore extends Connector {
    * @param {Object} _options The options object
    * @param {Function} callback The callback function
    */
-  async update(model: string, filter: Filter, data, _options: CallOptions, callback) {
+  async update(
+    model: string,
+    filter: Filter,
+    data,
+    _options: CallOptions,
+    callback: CallbackFunction,
+  ) {
     const { where } = filter
 
     // Handle ".updateById" from LoopBack
@@ -524,7 +541,7 @@ class GoogleCloudDatastore extends Connector {
    * @param {Object} options - the options object
    * @param {Function} [callback] - the callback function
    */
-  async destroyAll(model: string, where: Filter, options: CallOptions, callback) {
+  async destroyAll(model: string, where: Filter, options: CallOptions, callback: CallbackFunction) {
     if (where && where.id) {
       const key = this.createEntityKeyWithId(model, where.id)
       const result = (await this.datastore.delete(key, options)) as CommitResponse
