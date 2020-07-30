@@ -37,6 +37,7 @@ then you should feel right at home. LoopBack has more constructs to wire up befo
 are similar. If you want to know how to get started with Loopback [check this](http://loopback.io/getting-started/).
 
 **Install the package:**
+
 ```bash
 npm install --save @gavel/loopback-connector-google-cloud-datastore
 # or
@@ -226,6 +227,13 @@ export class UserService {
   }
 }
 ```
+
+## Publishing new Version
+
+Thanks to the [awesome action](https://github.com/marketplace/actions/publish-to-npm) created by
+[pascalgn](https://github.com/pascalgn), when someone changes the version in `package.json` to 1.2.3 and pushes a
+commit with the message `Release 1.2.3`, the `npm-publish` action will create a new tag `v1.2.3` and publish the
+package to the npm registry.
 
 ### License
 
