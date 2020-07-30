@@ -37,6 +37,8 @@ jobs:
         run: npm install
       - name: Build outputs
         run: npm run build
+      - name: List outputs
+        run: ls -l dist/
       - name: Publish if version has been updated
         uses: pascalgn/npm-publish-action@06e0830ea83eea10ed4a62654eeaedafb8bf50fc
         with: # All of theses inputs are optional
