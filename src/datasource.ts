@@ -141,7 +141,6 @@ class GoogleCloudDatastore extends Connector {
       callback(null, id)
     } catch (error) {
       console.error(error)
-      throw error
     }
   }
 
@@ -201,7 +200,6 @@ class GoogleCloudDatastore extends Connector {
       return Promise.resolve([])
     } catch (error) {
       console.error(error)
-      throw error
     }
   }
 
@@ -219,7 +217,6 @@ class GoogleCloudDatastore extends Connector {
       return Promise.resolve(result)
     } catch (error) {
       console.error(error)
-      throw error
     }
   }
 
@@ -350,7 +347,6 @@ class GoogleCloudDatastore extends Connector {
       callback(null, result)
     } catch (error) {
       console.error(error)
-      throw error
     }
   }
 
@@ -486,7 +482,6 @@ class GoogleCloudDatastore extends Connector {
       callback(null, result.length)
     } catch (error) {
       console.error(error)
-      throw error
     }
   }
 
@@ -545,7 +540,6 @@ class GoogleCloudDatastore extends Connector {
       callback(null, { count: updatedRows })
     } catch (error) {
       console.error(error)
-      throw error
     }
   }
 
@@ -583,7 +577,6 @@ class GoogleCloudDatastore extends Connector {
       }
     } catch (error) {
       console.error(error)
-      throw error
     }
   }
 }
