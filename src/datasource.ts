@@ -270,7 +270,11 @@ class GoogleCloudDatastore extends Connector {
         // example:
         // order: 'price DESC',
         const [property, orderOption] = option.split(' ')
-        query = query.order(property, GoogleCloudDatastore.generateOrderingObject(orderOption))
+        if (orderOption) {
+          query = query.order(property, GoogleCloudDatastore.generateOrderingObject(orderOption))
+        } else {
+          console.error('No order provided for property. Please provide DESC or ASC sort order.')
+        }
       }
     }
 
