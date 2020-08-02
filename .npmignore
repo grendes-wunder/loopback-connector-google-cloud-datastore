@@ -10,5 +10,17 @@
 # Node
 node_modules
 
+# CI/CD
+.github
+Dockerfile.test
+docker-compose.yml
+jest.config.js
+
 # Other
 yarn-error.log
+.huskyrc
+tsconfig.json
+.prettierrc.js
+.eslintrc
+.eslintrc.js
+

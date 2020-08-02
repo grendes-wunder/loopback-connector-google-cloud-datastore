@@ -259,7 +259,7 @@ class GoogleCloudDatastore extends Connector {
     }
 
     // determine if it's ASC or DESC and return the JS object matching that order
-    if (order && order.length > 1) {
+    if (order) {
       if (GoogleCloudDatastore.notAnArray(order)) {
         order = [order]
       }
