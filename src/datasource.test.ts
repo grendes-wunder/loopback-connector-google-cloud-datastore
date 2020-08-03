@@ -176,6 +176,13 @@ describe('Test Google Cloud Datastore Connector', () => {
     })
   })
 
+  it('Should replace attributes for a model entity', (done: DoneCallback) => {
+    Customer.replaceById(customer1.id, { emails: ['bar@example.com'] }, (error, customer) => {
+      expect(customer.emails.length).toEqual(1)
+      error ? done(error) : done()
+    })
+  })
+
   it('Should delete an entity', (done: DoneCallback) => {
     Customer.destroyAll({ id: customer1.id }, (error, deleteResult) => {
       expect(deleteResult.count).toEqual(1)

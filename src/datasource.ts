@@ -84,7 +84,7 @@ class GoogleCloudDatastore extends Connector {
    * @returns {EntityKey}
    */
   private createEntityKeyWithId(kindName: string, id: string): EntityKey {
-    return this.datastore.key([kindName, Number.parseInt(id)])
+    return this.datastore.key([kindName, Number(id)])
   }
 
   /**
@@ -141,6 +141,7 @@ class GoogleCloudDatastore extends Connector {
       callback(null, id)
     } catch (error) {
       console.error(error)
+      callback(error)
     }
   }
 
@@ -351,6 +352,7 @@ class GoogleCloudDatastore extends Connector {
       callback(null, result)
     } catch (error) {
       console.error(error)
+      callback(error)
     }
   }
 
@@ -486,17 +488,8 @@ class GoogleCloudDatastore extends Connector {
       callback(null, result.length)
     } catch (error) {
       console.error(error)
+      callback(error)
     }
-  }
-
-  private async updateEntity(model: string, id: string, data: object): Promise<Count> {
-    const key = this.createEntityKeyWithId(model, id)
-    const updateResponse = (await this.datastore.update({
-      key,
-      data,
-    })) as UpdateResponse
-    const updatedRows = updateResponse[0].mutationResults.length
-    return { count: updatedRows }
   }
 
   /**
@@ -506,7 +499,7 @@ class GoogleCloudDatastore extends Connector {
    *  For Example: @model({ name: Task.name })
    * @param {Object} filter The filter object
    * @param {Object} data The property/value pairs to be updated
-   * @param {Object} _options The options object
+   * @param {Object} _options - configure network options.
    * @param {Function} callback The callback function
    */
   async update(
@@ -544,7 +537,38 @@ class GoogleCloudDatastore extends Connector {
       callback(null, { count: updatedRows })
     } catch (error) {
       console.error(error)
+      callback(error)
     }
+  }
+
+  /**
+   * Replace matching Entity
+   *
+   * @param {String} model The model name
+   * @param {String} id The entity id
+   * @param {Object} data The property/value pairs to be replaced
+   * @param {Object} _options - configure network options.
+   * @param {Function} callback The callback function
+   */
+  async replaceById(model, id, data, _options, callback) {
+    try {
+      const result = await this.updateEntity(model, id, data)
+      callback(null, result)
+    } catch (error) {
+      console.error(error)
+      callback(error)
+    }
+  }
+
+  private async updateEntity(model: string, id: string, data: object): Promise<Count> {
+    const key = this.createEntityKeyWithId(model, id)
+    const updateResponse = (await this.datastore.update({
+      key,
+      data,
+    })) as UpdateResponse
+    const updatedRows = updateResponse[0].mutationResults.length
+    console.log('updated rows:', updatedRows)
+    return { count: updatedRows }
   }
 
   /**
@@ -581,6 +605,7 @@ class GoogleCloudDatastore extends Connector {
       }
     } catch (error) {
       console.error(error)
+      callback(error)
     }
   }
 }
