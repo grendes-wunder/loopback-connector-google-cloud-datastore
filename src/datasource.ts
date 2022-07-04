@@ -37,10 +37,15 @@ class GoogleCloudDatastore extends Connector {
   constructor(dataSourceProperties: any) {
     super()
     const { keyFilename, projectId } = dataSourceProperties
-    this.datastore = new Datastore({
-      keyFilename: path.resolve(keyFilename),
-      projectId,
-    })
+
+    if (!!keyFilename && !!projectId) {
+      this.datastore = new Datastore({
+        keyFilename: path.resolve(keyFilename),
+        projectId,
+      })
+    } else {
+      this.datastore = new Datastore();
+    }    
   }
 
   /**
