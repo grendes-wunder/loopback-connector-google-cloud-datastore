@@ -1,5 +1,5 @@
 {
-  "name": "@gavelapis/loopback-connector-google-cloud-datastore",
+  "name": "@grendes-wunder/loopback-connector-google-cloud-datastore",
   "version": "1.1.0",
   "description": "Google Cloud Datastore connector for the LoopBack 4 framework.",
   "main": "dist/index.js",
@@ -15,7 +15,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:gavelapis/loopback-connector-google-cloud-datastore.git"
+    "url": "git@github.com:grendes-wunder/loopback-connector-google-cloud-datastore.git"
   },
   "keywords": [
     "connector",
@@ -27,10 +27,10 @@
     "cloud",
     "datastore"
   ],
-  "author": "Clement Oh <clement.oh094@gmail.com>",
+  "author": "Gabor Rendes <gabor.rendes@wunderbytes.eu",
   "license": "MIT",
-  "homepage": "https://github.com/gavelapis/loopback-connector-google-cloud-datastore#readme",
-  "bugs": "https://github.com/gavelapis/loopback-connector-google-cloud-datastoreissues",
+  "homepage": "https://github.com/grendes-wunder/loopback-connector-google-cloud-datastore#readme",
+  "bugs": "https://github.com/grendes-wunder/loopback-connector-google-cloud-datastoreissues",
   "dependencies": {
     "@google-cloud/datastore": "^5.1.0",
     "@loopback/repository": "^2.10.0",
