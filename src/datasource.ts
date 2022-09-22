@@ -44,8 +44,8 @@ class GoogleCloudDatastore extends Connector {
         projectId,
       })
     } else {
-      this.datastore = new Datastore();
-    }    
+      this.datastore = new Datastore()
+    }
   }
 
   /**
@@ -106,7 +106,6 @@ class GoogleCloudDatastore extends Connector {
     const data = Object.assign(entityProperties, {
       createdAt: new Date().toJSON(),
       updatedAt: null,
-      id: key.name,
     })
     return {
       key,
@@ -567,6 +566,8 @@ class GoogleCloudDatastore extends Connector {
 
   private async updateEntity(model: string, id: string, data: object): Promise<Count> {
     const key = this.createEntityKeyWithId(model, id)
+    // @ts-ignore
+    delete data.id
     const updateResponse = (await this.datastore.update({
       key,
       data,
